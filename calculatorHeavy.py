@@ -309,6 +309,9 @@ def utilization_bus(heavy):
 
 def customs_heavy(heavy):
     return (price_to_rub(heavy.price, heavy.currency) +
-            customs_utilization_heavy(heavy) +
             customs_duty(heavy) +
             customs_vat(heavy))
+
+def customs_all_heavy(heavy):
+    return (customs_heavy(heavy) +
+            customs_utilization_heavy(heavy))

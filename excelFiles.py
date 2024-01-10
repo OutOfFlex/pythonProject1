@@ -27,13 +27,13 @@ def export_excel(file_path, data):
 
         # Расчеты
         df['Таможенный сбор'] = df['price'] * 0.1
-        for i in range(2,df["Your_Column"].last_valid_index()):
+        for i in range(2, df["Your_Column"].last_valid_index()):
             if df.iat[i, 1] == 1:
-                light_excel(df)
+                light_excel(df.iloc[i])
             elif df.iat[i, 1] == 2:
-                heavy_excel(df)
+                heavy_excel(df.iloc[i])
             else:
-                raise ValueError(f"Ошибка при экспорте: {str(Exception)}")
+                raise ValueError(f"Invalid value in the second column at index {i}")
         # Запись DataFrame в Excel
         df.to_excel(file_path, index=False)
 

@@ -1,5 +1,5 @@
 import multiusedFunctions
-from calculatorHeavy import *
+import calculatorHeavy
 from calculatorLight import *
 from calculatorPhysical import *
 from currencies import *
@@ -26,12 +26,16 @@ class CustomsCalculatorGUI:
         self.currency_var = tk.StringVar()
         self.engine_type_var = tk.StringVar()
         self.power_type_var = tk.StringVar()
+        self.id_code_var = tk.StringVar()
+        self.tn_ved = tk.IntVar()
+        self.deadweight = tk.IntVar()
+        self.id_code_symbols = {"a": "A", "b": "B", "c": "C", "e": "E", "f": "F", "g": "G1-3", "g2": "G4-7", "k": "K", "l": "L", "m": "M", "n": "N", "i": "I", "bus": "Автобус"}
         self.currency_symbols = {"rub": "₽", "cny": "¥", "eur": "€", "usd": "$", "yen": "Y"}
         self.engine_type_symbols = {"ice": "Бензин", "hyb": "Гибрид", "euv": "Электромотор", "dis": "Дизель"}
         self.power_type_symbols = {"hp": "Л.с.", "kw": "Квт.ч"}
 
-        ttk.Button(root, text="Импорт из Excel", command=self.import_from_excel).grid(row=0, column=1, pady=10)
-        ttk.Button(root, text="Экспорт в Excel", command=self.export_to_excel).grid(row=0, column=2, pady=10)
+        #ttk.Button(root, text="Импорт из Excel", command=self.import_from_excel).grid(row=0, column=1, pady=10)
+        #ttk.Button(root, text="Экспорт в Excel", command=self.export_to_excel).grid(row=0, column=2, pady=10)
 
         # Строка для обновления валют и получения актуального курса
         ttk.Button(root, text="Обновить валюты", command=self.update_currencies).grid(row=1, column=0, padx=10, pady=5,
@@ -40,55 +44,9 @@ class CustomsCalculatorGUI:
                                         text=f"CNY={cny_rub:.2f} USD={usd_rub:.2f} EUR={eur_rub:.2f} YEN={yen_rub:.3f}")
         self.currency_label.grid(row=1, column=1, columnspan=3, padx=10, pady=5, sticky="w")
 
-        # Создаем метки и текстовые поля для ввода данных
-        ttk.Label(root, text="Мощность л.с.:").grid(row=2, column=0, padx=10, pady=5, sticky="e")
-        ttk.Entry(root, textvariable=self.power_var, width=8).grid(row=2, column=1, padx=10, pady=5)
+        ttk.Button(root, text="Легковые авто", command=self.input_light).grid(row=2, column=1, pady=10)
+        ttk.Button(root, text="Спец-техника", command=self.input_heavy).grid(row=2, column=2, pady=10)
 
-        ttk.Label(root, text="Объем двигателя (см³):").grid(row=3, column=0, padx=10, pady=5, sticky="e")
-        ttk.Entry(root, textvariable=self.engine_capacity_var, width=8).grid(row=3, column=1, padx=10, pady=5)
-
-        ttk.Label(root, text="Произведён(год, месяц):").grid(row=4, column=0, padx=5, pady=5, sticky="e")
-        ttk.Entry(root, textvariable=self.year_var, width=8).grid(row=4, column=1, padx=5, pady=5)
-        ttk.Entry(root, textvariable=self.month_var, width=4).grid(row=4, column=2, padx=5, pady=5, sticky="w")
-
-        ttk.Label(root, text="Стоимость автомобиля:").grid(row=6, column=0, padx=5, pady=5, sticky="e")
-        ttk.Entry(root, textvariable=self.price_var, width=8).grid(row=6, column=1, padx=5, pady=5)
-
-        # Создаем Combobox для выбора валюты
-        self.currency_combobox = ttk.Combobox(root, textvariable=self.currency_var, state="readonly")
-        self.currency_combobox.grid(row=6, column=2, padx=5, pady=5, sticky="w")
-        self.currency_combobox.configure(width=2)
-
-        self.currencies = list(self.currency_symbols.values())
-
-        # Добавляем элементы в выпадающий список Combobox с символами валют
-        self.currency_combobox["values"] = self.currencies
-        self.currency_combobox.current(self.currencies.index("₽"))  # значение по умолчанию
-
-        # Создаем Combobox для выбора типа мощности
-        self.power_type_combobox = ttk.Combobox(root, textvariable=self.power_type_var, state="readonly")
-        self.power_type_combobox.grid(row=2, column=2, padx=5, pady=5, sticky="w")
-        self.power_type_combobox.configure(width=5)
-
-        power_types = list(self.power_type_symbols.values())
-
-        # Добавляем элементы в выпадающий список Combobox с типами мощности
-        self.power_type_combobox["values"] = power_types
-        self.power_type_combobox.current(power_types.index("Л.с."))  # значение по умолчанию
-
-        # Создаем Combobox для выбора типа двигателя
-        self.engine_type_combobox = ttk.Combobox(root, textvariable=self.engine_type_var, state="readonly")
-        self.engine_type_combobox.grid(row=3, column=2, columnspan=2, padx=8, pady=5, sticky="w")
-        self.engine_type_combobox.configure(width=12)
-
-        engine_types = list(self.engine_type_symbols.values())
-
-        # Добавляем элементы в выпадающий список Combobox с типами двигателей
-        self.engine_type_combobox["values"] = engine_types
-        self.engine_type_combobox.current(engine_types.index("Бензин"))  # значение по умолчанию
-
-        # Создаем кнопку для расчета
-        ttk.Button(root, text="Рассчитать", command=self.calculate_customs).grid(row=9, column=1, columnspan=2, pady=10)
 
     def import_from_excel(self):
         file_path = filedialog.askopenfilename(title="Выберите файл Excel", filetypes=[("Excel files", "*.xlsx")])
@@ -201,6 +159,127 @@ class CustomsCalculatorGUI:
         currencies_text = f"CNY={currencies.cny_rub:.2f} USD={currencies.usd_rub:.2f} EUR={currencies.eur_rub:.2f} YEN={currencies.yen_rub:.3f}"
         self.currency_label.config(text=currencies_text)
 
+    def input_heavy(self):
+        enter_heavy_window = tk.Toplevel(self.root)
+        enter_heavy_window.title("Результат расчета")
+        enter_heavy_window.resizable(width=False, height=False)
+
+        # Создаем метки и текстовые поля для ввода данных
+        ttk.Label(enter_heavy_window, text="Мощность л.с.:").grid(row=2, column=0, padx=10, pady=5, sticky="e")
+        ttk.Entry(enter_heavy_window, textvariable=self.power_var, width=8).grid(row=2, column=1, padx=10, pady=5)
+
+        ttk.Label(enter_heavy_window, text="Объем двигателя (см³):").grid(row=3, column=0, padx=10, pady=5, sticky="e")
+        ttk.Entry(enter_heavy_window, textvariable=self.engine_capacity_var, width=8).grid(row=3, column=1, padx=10,
+                                                                                           pady=5)
+
+        ttk.Label(enter_heavy_window, text="Произведён(год, месяц):").grid(row=4, column=0, padx=5, pady=5, sticky="e")
+        ttk.Entry(enter_heavy_window, textvariable=self.year_var, width=8).grid(row=4, column=1, padx=5, pady=5)
+        ttk.Entry(enter_heavy_window, textvariable=self.month_var, width=4).grid(row=4, column=2, padx=5, pady=5,
+                                                                                 sticky="w")
+
+        ttk.Label(enter_heavy_window, text="Стоимость автомобиля:").grid(row=6, column=0, padx=5, pady=5, sticky="e")
+        ttk.Entry(enter_heavy_window, textvariable=self.price_var, width=8).grid(row=6, column=1, padx=5, pady=5)
+
+        # Создаем Combobox для выбора валюты
+        self.currency_combobox = ttk.Combobox(enter_heavy_window, textvariable=self.currency_var, state="readonly")
+        self.currency_combobox.grid(row=6, column=2, padx=5, pady=5, sticky="w")
+        self.currency_combobox.configure(width=2)
+
+        self.currencies = list(self.currency_symbols.values())
+
+        # Добавляем элементы в выпадающий список Combobox с символами валют
+        self.currency_combobox["values"] = self.currencies
+        self.currency_combobox.current(self.currencies.index("₽"))  # значение по умолчанию
+
+        ttk.Label(enter_heavy_window, text="ТН-ВЭД:").grid(row=7, column=0, padx=5, pady=5, sticky="e")
+        ttk.Entry(enter_heavy_window, textvariable=self.tn_ved, width=8).grid(row=7, column=1, padx=5, pady=5)
+
+        ttk.Label(enter_heavy_window, text="Грузоподъёмность:").grid(row=8, column=0, padx=5, pady=5, sticky="e")
+        ttk.Entry(enter_heavy_window, textvariable=self.deadweight, width=8).grid(row=8, column=1, padx=5, pady=5)
+
+        ttk.Label(enter_heavy_window, text="Код:").grid(row=9, column=0, padx=5, pady=5, sticky="e")
+        # Создаем Combobox для выбора кода
+        self.id_code_combobox = ttk.Combobox(enter_heavy_window, textvariable=self.id_code_var, state="readonly")
+        self.id_code_combobox.grid(row=9, column=1, padx=5, pady=5, sticky="w")
+        self.id_code_combobox.configure(width=5)
+
+        id_codes = list(self.id_code_symbols.values())
+
+        # Добавляем элементы в выпадающий список Combobox с кодами
+        self.id_code_combobox["values"] = id_codes
+        self.id_code_combobox.current(id_codes.index("A"))  # значение по умолчанию
+
+        # Создаем Combobox для выбора типа мощности
+        self.power_type_combobox = ttk.Combobox(enter_heavy_window, textvariable=self.power_type_var, state="readonly")
+        self.power_type_combobox.grid(row=2, column=2, padx=5, pady=5, sticky="w")
+        self.power_type_combobox.configure(width=5)
+
+        power_types = list(self.power_type_symbols.values())
+
+        # Добавляем элементы в выпадающий список Combobox с типами мощности
+        self.power_type_combobox["values"] = power_types
+        self.power_type_combobox.current(power_types.index("Л.с."))  # значение по умолчанию
+
+        # Создаем кнопку для расчета
+        ttk.Button(enter_heavy_window, text="Рассчитать", command=self.calculate_heavy_customs).grid(row=10, column=1,
+                                                                                               columnspan=2, pady=10)
+    # Окно для ввода и расчёта данных по легковым авто
+    def input_light(self):
+
+        enter_light_window = tk.Toplevel(self.root)
+        enter_light_window.title("Результат расчета")
+        enter_light_window.resizable(width=False, height=False)
+
+        # Создаем метки и текстовые поля для ввода данных
+        ttk.Label(enter_light_window, text="Мощность л.с.:").grid(row=2, column=0, padx=10, pady=5, sticky="e")
+        ttk.Entry(enter_light_window, textvariable=self.power_var, width=8).grid(row=2, column=1, padx=10, pady=5)
+
+        ttk.Label(enter_light_window, text="Объем двигателя (см³):").grid(row=3, column=0, padx=10, pady=5, sticky="e")
+        ttk.Entry(enter_light_window, textvariable=self.engine_capacity_var, width=8).grid(row=3, column=1, padx=10, pady=5)
+
+        ttk.Label(enter_light_window, text="Произведён(год, месяц):").grid(row=4, column=0, padx=5, pady=5, sticky="e")
+        ttk.Entry(enter_light_window, textvariable=self.year_var, width=8).grid(row=4, column=1, padx=5, pady=5)
+        ttk.Entry(enter_light_window, textvariable=self.month_var, width=4).grid(row=4, column=2, padx=5, pady=5, sticky="w")
+
+        ttk.Label(enter_light_window, text="Стоимость автомобиля:").grid(row=6, column=0, padx=5, pady=5, sticky="e")
+        ttk.Entry(enter_light_window, textvariable=self.price_var, width=8).grid(row=6, column=1, padx=5, pady=5)
+
+        # Создаем Combobox для выбора валюты
+        self.currency_combobox = ttk.Combobox(enter_light_window, textvariable=self.currency_var, state="readonly")
+        self.currency_combobox.grid(row=6, column=2, padx=5, pady=5, sticky="w")
+        self.currency_combobox.configure(width=2)
+
+        self.currencies = list(self.currency_symbols.values())
+
+        # Добавляем элементы в выпадающий список Combobox с символами валют
+        self.currency_combobox["values"] = self.currencies
+        self.currency_combobox.current(self.currencies.index("₽"))  # значение по умолчанию
+
+        # Создаем Combobox для выбора типа мощности
+        self.power_type_combobox = ttk.Combobox(enter_light_window, textvariable=self.power_type_var, state="readonly")
+        self.power_type_combobox.grid(row=2, column=2, padx=5, pady=5, sticky="w")
+        self.power_type_combobox.configure(width=5)
+
+        power_types = list(self.power_type_symbols.values())
+
+        # Добавляем элементы в выпадающий список Combobox с типами мощности
+        self.power_type_combobox["values"] = power_types
+        self.power_type_combobox.current(power_types.index("Л.с."))  # значение по умолчанию
+
+        # Создаем Combobox для выбора типа двигателя
+        self.engine_type_combobox = ttk.Combobox(enter_light_window, textvariable=self.engine_type_var, state="readonly")
+        self.engine_type_combobox.grid(row=3, column=2, columnspan=2, padx=8, pady=5, sticky="w")
+        self.engine_type_combobox.configure(width=12)
+
+        engine_types = list(self.engine_type_symbols.values())
+
+        # Добавляем элементы в выпадающий список Combobox с типами двигателей
+        self.engine_type_combobox["values"] = engine_types
+        self.engine_type_combobox.current(engine_types.index("Бензин"))  # значение по умолчанию
+
+        # Создаем кнопку для расчета
+        ttk.Button(enter_light_window, text="Рассчитать", command=self.calculate_customs).grid(row=9, column=1, columnspan=2, pady=10)
+
     def calculate_customs(self):
         # Получаем выбранное значение валюты и типа двигателя
         selected_currency_index = self.currency_combobox.current()
@@ -242,7 +321,7 @@ class CustomsCalculatorGUI:
                 columnspan=2, pady=5)
             ttk.Label(result_window, text=f"Акциз: {int(customs_excise_physical(vehicle)):,}").grid(row=4, column=0,
                                                                                                     columnspan=2,
-                                                                                                    pady=5)
+                                                                                                       pady=5)
             ttk.Label(result_window, text=f"Пошлина: {int(customs_duty_physical(vehicle)):,}").grid(row=5, column=0,
                                                                                                     columnspan=2,
                                                                                                     pady=5)
@@ -299,3 +378,55 @@ class CustomsCalculatorGUI:
         ttk.Label(result_window, text=f"Суммарно: {int(customs_artificial(vehicle)):,}").grid(row=8, column=2,
                                                                                               columnspan=2,
                                                                                               pady=5)
+    def calculate_heavy_customs(self):
+        # Получаем выбранное значение валюты и типа двигателя
+        selected_currency_index = self.currency_combobox.current()
+        selected_currency = list(self.currency_symbols.keys())[selected_currency_index]
+
+        selected_power_type_index = self.power_type_combobox.current()
+        selected_power_type = list(self.power_type_symbols.keys())[selected_power_type_index]
+
+        selected_id_code_index = self.id_code_combobox.current()
+        selected_id_code = list(self.id_code_symbols.keys())[selected_id_code_index]
+
+        # Создаем объект heavy с введенными данными
+        heavy = calculatorHeavy.Heavy(
+            self.power_var.get(),
+            selected_power_type,
+            self.engine_capacity_var.get(),
+            self.year_var.get(),
+            self.month_var.get(),
+            self.price_var.get(),
+            selected_currency,
+            selected_id_code,
+            self.tn_ved.get(),
+            self.deadweight.get()
+        )
+
+        multiusedFunctions.power_to_type(heavy)
+        # Вызываем функцию для расчета и выводим результат в новом окне
+        result_window = tk.Toplevel(self.root)
+        result_window.title("Результат расчета")
+        result_window.resizable(width=False, height=False)
+
+        ttk.Label(result_window, text="Таможенные платежи(спец-техника):").grid(row=1, column=0,
+                                                                                            columnspan=2, pady=5)
+        ttk.Label(result_window, text=f"Цена авто: {int(price_to_rub(heavy.price, heavy.currency)):,}").grid(
+            row=2, column=0, columnspan=2,
+            pady=5)
+        ttk.Label(result_window, text=f"Пошлина: {int(calculatorHeavy.customs_duty(heavy)):,}").grid(row=3, column=0,
+                                                                                                columnspan=2,
+                                                                                                pady=5)
+        ttk.Label(result_window, text=f"НДС: {int(calculatorHeavy.customs_vat(heavy)):,}").grid(
+            row=4, column=0,
+            columnspan=2, pady=5)
+        ttk.Label(result_window, text=f"Утильсбор: {int(calculatorHeavy.customs_utilization_heavy(heavy)):,}").grid(row=5,
+                                                                                                         column=0,
+                                                                                                         columnspan=2,
+                                                                                                         pady=5)
+        ttk.Label(result_window, text=f"Суммарно: {int(calculatorHeavy.customs_heavy(heavy)):,}").grid(row=6, column=0,
+                                                                                            columnspan=2,
+                                                                                            pady=5)
+        ttk.Label(result_window, text=f"Суммарно с ЭПСМ: {int(calculatorHeavy.customs_all_heavy(heavy)):,}").grid(row=7, column=0,
+                                                                                          columnspan=2,
+                                                                                          pady=5)
