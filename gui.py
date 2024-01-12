@@ -1,15 +1,9 @@
-import multiusedFunctions
-import calculatorHeavy
-from calculatorLight import *
-from calculatorPhysical import *
-from currencies import *
 import tkinter as tk
 from tkinter import ttk
 from tkinter import filedialog
 from tkinter import messagebox
 
-from excelFiles import import_excel, export_excel
-import pandas as pd
+from excelFiles import *
 
 
 class CustomsCalculatorGUI:
@@ -28,14 +22,14 @@ class CustomsCalculatorGUI:
         self.power_type_var = tk.StringVar()
         self.id_code_var = tk.StringVar()
         self.tn_ved = tk.IntVar()
-        self.deadweight = tk.IntVar()
-        self.id_code_symbols = {"a": "A", "b": "B", "c": "C", "e": "E", "f": "F", "g": "G1-3", "g2": "G4-7", "k": "K", "l": "L", "m": "M", "n": "N", "i": "I", "bus": "Автобус"}
+        self.id_code_symbols = {"a": "A", "b": "B", "c": "C", "e": "E", "f": "F", "g": "G1-3", "g2": "G4-7", "k": "K",
+                                "l": "L", "m": "M", "n": "N", "i": "I", "bus": "Автобус"}
         self.currency_symbols = {"rub": "₽", "cny": "¥", "eur": "€", "usd": "$", "yen": "Y"}
         self.engine_type_symbols = {"ice": "Бензин", "hyb": "Гибрид", "euv": "Электромотор", "dis": "Дизель"}
         self.power_type_symbols = {"hp": "Л.с.", "kw": "Квт.ч"}
 
-        #ttk.Button(root, text="Импорт из Excel", command=self.import_from_excel).grid(row=0, column=1, pady=10)
-        #ttk.Button(root, text="Экспорт в Excel", command=self.export_to_excel).grid(row=0, column=2, pady=10)
+        ttk.Button(root, text="Импорт из Excel", command=self.import_from_excel).grid(row=0, column=1, pady=10)
+        ttk.Button(root, text="Экспорт в Excel", command=self.export_to_excel).grid(row=0, column=2, pady=10)
 
         # Строка для обновления валют и получения актуального курса
         ttk.Button(root, text="Обновить валюты", command=self.update_currencies).grid(row=1, column=0, padx=10, pady=5,
@@ -47,102 +41,27 @@ class CustomsCalculatorGUI:
         ttk.Button(root, text="Легковые авто", command=self.input_light).grid(row=2, column=1, pady=10)
         ttk.Button(root, text="Спец-техника", command=self.input_heavy).grid(row=2, column=2, pady=10)
 
-
-    def import_from_excel(self):
+    @staticmethod
+    def import_from_excel():
         file_path = filedialog.askopenfilename(title="Выберите файл Excel", filetypes=[("Excel files", "*.xlsx")])
 
         if file_path:
             try:
                 # Чтение данных из Excel
-                df = pd.read_excel(file_path)
-
-                # Получение данных из DataFrame
-                data = {
-                    'power': df.at[0, 'Мощность л.с.'],
-                    'engine_capacity': df.at[0, 'Объем двигателя (см³)'],
-                    'year': df.at[0, 'Произведён(год, месяц)'].year,
-                    'month': df.at[0, 'Произведён(год, месяц)'].month,
-                    'price': df.at[0, 'Стоимость автомобиля'],
-                    'currency': df.at[0, 'Валюта'],
-                    'power_type': df.at[0, 'Тип мощности'],
-                    'engine_type': df.at[0, 'Тип двигателя'],
-                }
-
-                # Присваиваем значения переменным класса
-                self.power_var.set(data['power'])
-                self.engine_capacity_var.set(data['engine_capacity'])
-                self.year_var.set(data['year'])
-                self.month_var.set(data['month'])
-                self.price_var.set(data['price'])
-                currency_index = self.currencies.index(data['currency'])
-                self.currency_combobox.current(currency_index)
-                power_type_index = self.power_types.index(data['power_type'])
-                self.power_type_combobox.current(power_type_index)
-                engine_type_index = self.engine_types.index(data['engine_type'])
-                self.engine_type_combobox.current(engine_type_index)
-
+                import_excel(file_path)
             except Exception as e:
                 messagebox.showerror("Ошибка", f"Ошибка при импорте: {str(e)}")
 
-    def export_to_excel(self):
+    @staticmethod
+    def export_to_excel():
         file_path = filedialog.asksaveasfilename(defaultextension=".xlsx", filetypes=[("Excel files", "*.xlsx")])
 
         if file_path:
             try:
-                # Создание DataFrame из значений переменных класса
-                data = {
-                    'power': self.power_var.get(),
-                    'engine_capacity': self.engine_capacity_var.get(),
-                    'year': self.year_var.get(),
-                    'month': self.month_var.get(),
-                    'price': self.price_var.get(),
-                    'currency': self.currencies[self.currency_combobox.current()],
-                    'power_type': self.power_types[self.power_type_combobox.current()],
-                    'engine_type': self.engine_types[self.engine_type_combobox.current()],
-                }
-
-                df = pd.DataFrame([data])
-
-                # Запись DataFrame в Excel
-                df.to_excel(file_path, index=False)
-
+                export_excel(file_path)
             except Exception as e:
                 messagebox.showerror("Ошибка", f"Ошибка при экспорте: {str(e)}")
 
-    def import_excel(file_path):
-        try:
-            # Чтение данных из Excel
-            df = pd.read_excel(file_path)
-
-            # Получение данных из DataFrame
-            return {
-                'power': df.at[0, 'power'],
-                'engine_capacity': df.at[0, 'engine_capacity'],
-                'year': df.at[0, 'year'],
-                'month': df.at[0, 'month'],
-                'price': df.at[0, 'price'],
-                'currency': df.at[0, 'currency'],
-                'power_type': df.at[0, 'power_type'],
-                'engine_type': df.at[0, 'engine_type'],
-            }
-
-        except Exception as e:
-            raise ValueError(f"Ошибка при импорте: {str(e)}")
-
-    def export_excel(file_path, data):
-        try:
-            # Создание DataFrame из словаря
-            df = pd.DataFrame([data])
-
-            # Расчеты
-            df['Таможенный сбор'] = df['price'] * 0.1
-            # Другие расчеты...
-
-            # Запись DataFrame в Excel
-            df.to_excel(file_path, index=False)
-
-        except Exception as e:
-            raise ValueError(f"Ошибка при экспорте: {str(e)}")
     @staticmethod
     def get_currencies():
         # Обновление валют
@@ -194,13 +113,10 @@ class CustomsCalculatorGUI:
         ttk.Label(enter_heavy_window, text="ТН-ВЭД:").grid(row=7, column=0, padx=5, pady=5, sticky="e")
         ttk.Entry(enter_heavy_window, textvariable=self.tn_ved, width=8).grid(row=7, column=1, padx=5, pady=5)
 
-        ttk.Label(enter_heavy_window, text="Грузоподъёмность:").grid(row=8, column=0, padx=5, pady=5, sticky="e")
-        ttk.Entry(enter_heavy_window, textvariable=self.deadweight, width=8).grid(row=8, column=1, padx=5, pady=5)
-
-        ttk.Label(enter_heavy_window, text="Код:").grid(row=9, column=0, padx=5, pady=5, sticky="e")
+        ttk.Label(enter_heavy_window, text="Код:").grid(row=8, column=0, padx=5, pady=5, sticky="e")
         # Создаем Combobox для выбора кода
         self.id_code_combobox = ttk.Combobox(enter_heavy_window, textvariable=self.id_code_var, state="readonly")
-        self.id_code_combobox.grid(row=9, column=1, padx=5, pady=5, sticky="w")
+        self.id_code_combobox.grid(row=8, column=1, padx=5, pady=5, sticky="w")
         self.id_code_combobox.configure(width=5)
 
         id_codes = list(self.id_code_symbols.values())
@@ -223,9 +139,9 @@ class CustomsCalculatorGUI:
         # Создаем кнопку для расчета
         ttk.Button(enter_heavy_window, text="Рассчитать", command=self.calculate_heavy_customs).grid(row=10, column=1,
                                                                                                columnspan=2, pady=10)
-    # Окно для ввода и расчёта данных по легковым авто
-    def input_light(self):
 
+    def input_light(self):
+        # Окно для ввода и расчёта данных по легковым авто
         enter_light_window = tk.Toplevel(self.root)
         enter_light_window.title("Результат расчета")
         enter_light_window.resizable(width=False, height=False)
@@ -378,6 +294,7 @@ class CustomsCalculatorGUI:
         ttk.Label(result_window, text=f"Суммарно: {int(customs_artificial(vehicle)):,}").grid(row=8, column=2,
                                                                                               columnspan=2,
                                                                                               pady=5)
+
     def calculate_heavy_customs(self):
         # Получаем выбранное значение валюты и типа двигателя
         selected_currency_index = self.currency_combobox.current()
@@ -399,8 +316,7 @@ class CustomsCalculatorGUI:
             self.price_var.get(),
             selected_currency,
             selected_id_code,
-            self.tn_ved.get(),
-            self.deadweight.get()
+            self.tn_ved.get()
         )
 
         multiusedFunctions.power_to_type(heavy)

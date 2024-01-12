@@ -50,7 +50,7 @@ def customs_excise_euv(power):
         return 1482 * power
     elif power <= 500:
         return 1534 * power
-    elif power < 500:
+    elif power > 500:
         return 1584 * power
     else:
         return 0
@@ -62,8 +62,6 @@ def customs_duty_euv(price):
 # Костыльный расчёт ПОЛНЫХ лет с месяца производства
 def check_manufactured_date(year, month):
     output_year = currentTime.year - year
-    if month == 13:
-        month = 5
     if currentTime.month < month:
         return output_year - 1
     else:

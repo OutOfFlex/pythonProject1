@@ -91,6 +91,8 @@ def customs_duty_physical(vehicle):
 # Расчёт утилизационного сбора для авто до 3 лет физ. лицо для Л.П.
 def customs_utiliaztion_physical3(vehicle):
     rate = 20000
+    if vehicle.engine_type == "euv":
+        return rate * 0.17
     if vehicle.engine_capacity <= 3000:
         return rate * 0.17
     elif vehicle.engine_capacity <= 3500:
@@ -104,6 +106,8 @@ def customs_utiliaztion_physical3(vehicle):
 # Расчёт утилизационного сбора для авто от 3 лет физ. лицо для Л.П.
 def customs_utiliaztion_physical4(vehicle):
     rate = 20000
+    if vehicle.engine_type == "euv":
+        return rate * 0.17
     if vehicle.engine_capacity <= 3500:
         return rate * 0.26
     elif vehicle.engine_capacity > 3500:
