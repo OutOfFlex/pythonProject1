@@ -1,6 +1,7 @@
 import requests
 import xml.etree.ElementTree as ET
 
+
 def get_currency_exchange_rates():
     # Запрос курсов валют с ЦБ РФ
     url = "https://www.cbr.ru/scripts/XML_daily.asp"
@@ -20,10 +21,12 @@ def get_currency_exchange_rates():
         print("Failed to retrieve currency exchange rates.")
         return {}
 
+
 eur_rub = 98.50
 cny_rub = 12.34
 yen_rub = 0.591
 usd_rub = 92.25
+
 
 # Обновить валюты в приложении
 def update_currencies():

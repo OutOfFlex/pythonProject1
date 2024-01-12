@@ -1,9 +1,9 @@
 import pandas as pd
 
-import currencies
 from calculatorLight import *
 from calculatorPhysical import *
-from currencies import *
+from models.vehicle import *
+from models.heavy import *
 
 import calculatorHeavy
 import multiusedFunctions
@@ -19,8 +19,8 @@ def import_excel(filepath):
 
 # Экспорт из датафрейма в эксель
 def export_excel(file_path):
-    last_index = df.iloc[:, 1].value_counts().get(1, 0)
-    for i in range(2, last_index + 1):
+    last_index = df.iloc[:, 1].last_valid_index()
+    for i in range(1, last_index + 1):
         if df.iat[i, 1] == 1:
             light_excel(i)
         elif df.iat[i, 1] == 2:
@@ -108,7 +108,7 @@ def light_excel(row_excel):
 def heavy_excel(row_excel):
     global df
 
-    heavy = calculatorHeavy.Heavy(
+    heavy = Heavy(
         df.iat[row_excel, 7],
         df.iat[row_excel, 8],
         df.iat[row_excel, 10],
@@ -119,9 +119,9 @@ def heavy_excel(row_excel):
         df.iat[row_excel, 3],
         df.iat[row_excel, 2]
     )
-
+    multiusedFunctions.power_to_type(heavy)
     df.iat[row_excel, 16] = price_to_rub(heavy.price, heavy.currency)
-    df.iat[row_excel, 25] = calculatorHeavy.customs_fee(heavy)
+    df.iat[row_excel, 25] = calculatorHeavy.customs_duty(heavy)
     df.iat[row_excel, 26] = calculatorHeavy.customs_utilization_heavy(heavy)
     df.iat[row_excel, 27] = calculatorHeavy.customs_vat(heavy)
     df.iat[row_excel, 28] = calculatorHeavy.customs_heavy(heavy)

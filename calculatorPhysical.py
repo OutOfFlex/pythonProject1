@@ -1,6 +1,5 @@
-import currencies
-from models.vehicle import *
 from multiusedFunctions import *
+
 
 # Акциз для физичекского лица
 def customs_excise_physical(vehicle):
@@ -8,6 +7,7 @@ def customs_excise_physical(vehicle):
         return customs_excise_euv(vehicle.power)
     else:
         return 0
+
 
 # Расчёт таможенной пошлины для возраста авто менее 3-х лет физ. лицо
 def customs_duty_physical3(vehicle):
@@ -135,6 +135,7 @@ def vat_physical(vehicle):
                  customs_duty_physical(vehicle)) * 0.20)
     else:
         return 0
+
 
 # Расчёт всей таможни для физических лиц
 def customs_physical(vehicle):

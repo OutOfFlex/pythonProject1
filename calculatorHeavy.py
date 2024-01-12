@@ -1,6 +1,4 @@
 from multiusedFunctions import *
-from models.heavy import *
-import currencies
 
 tn_ved_data = {
     8427101000: 0,
@@ -87,6 +85,7 @@ tn_ved_data = {
     8716400000: 0.10
 }
 
+
 # Расчёт пошлины
 def customs_duty(heavy):
     # Проверяем, есть ли код в словаре tn_ved_data
@@ -96,10 +95,15 @@ def customs_duty(heavy):
         print(f"Код ТН ВЭД {tn_ved_data[heavy.tn_ved]} не найден в словаре.")
         return 0
 
+
 # Расчёт НДС
 def customs_vat(heavy):
-    return (price_to_rub(heavy.price, heavy.currency) + customs_duty(heavy)) * 0.2
+    return ((price_to_rub(heavy.price, heavy.currency)
+            + customs_duty(heavy))
+            * 0.2)
 
+
+# Расчёт утильсбора
 def customs_utilization_heavy(heavy):
     if heavy.id_code == 'f':
         return utilization_f(heavy)
@@ -130,8 +134,10 @@ def customs_utilization_heavy(heavy):
     else:
         return 0
 
+
+# Расчёт утильсбора категории F
 def utilization_f(heavy):
-    rate = 20000
+    rate = 172500
     if heavy.power < 50:
         return rate * (1 if check_manufactured_date(heavy.year, heavy.month) < 3 else 6)
     elif heavy.power < 100:
@@ -149,8 +155,10 @@ def utilization_f(heavy):
     else:
         return 0
 
+
+# Расчёт утильсбора категории R
 def utilization_r(heavy):
-    rate = 20000
+    rate = 172500
     if heavy.power < 200:
         return rate * (22.4 if check_manufactured_date(heavy.year, heavy.month) < 3 else 35)
     elif heavy.power < 650:
@@ -162,8 +170,10 @@ def utilization_r(heavy):
     else:
         return 0
 
+
+# Расчёт утильсбора категории A
 def utilization_a(heavy):
-    rate = 20000
+    rate = 172500
     if heavy.power < 100:
         return rate * (3.2 if check_manufactured_date(heavy.year, heavy.month) < 3 else 8.5)
     elif heavy.power < 140:
@@ -175,8 +185,10 @@ def utilization_a(heavy):
     else:
         return 0
 
+
+# Расчёт утильсбора категории B
 def utilization_b(heavy):
-    rate = 20000
+    rate = 172500
     if heavy.power < 100:
         return rate * (4 if check_manufactured_date(heavy.year, heavy.month) < 3 else 12)
     elif heavy.power < 200:
@@ -190,8 +202,10 @@ def utilization_b(heavy):
     else:
         return 0
 
+
+# Расчёт утильсбора категории C
 def utilization_c(heavy):
-    rate = 20000
+    rate = 172500
     if heavy.power < 170:
         return rate * (4 if check_manufactured_date(heavy.year, heavy.month) < 3 else 17)
     elif heavy.power < 250:
@@ -201,8 +215,10 @@ def utilization_c(heavy):
     else:
         return 0
 
+
+# Расчёт утильсбора категории E
 def utilization_e(heavy):
-    rate = 20000
+    rate = 172500
     if heavy.power < 40:
         return rate * (4.62 if check_manufactured_date(heavy.year, heavy.month) < 3 else 9.86)
     elif heavy.power < 80:
@@ -212,8 +228,10 @@ def utilization_e(heavy):
     else:
         return 0
 
+
+# Расчёт утильсбора категории G1-3
 def utilization_g(heavy):
-    rate = 20000
+    rate = 172500
     if heavy.power < 170:
         return rate * (11.5 if check_manufactured_date(heavy.year, heavy.month) < 3 else 44.3)
     elif heavy.power < 250:
@@ -223,8 +241,10 @@ def utilization_g(heavy):
     else:
         return 0
 
+
+# Расчёт утильсбора категории 4-7
 def utilization_g2(heavy):
-    rate = 20000
+    rate = 172500
     if heavy.power < 130:
         return rate * (10 if check_manufactured_date(heavy.year, heavy.month) < 3 else 30)
     elif heavy.power < 200:
@@ -236,8 +256,10 @@ def utilization_g2(heavy):
     else:
         return 0
 
+
+# Расчёт утильсбора категории I
 def utilization_i(heavy):
-    rate = 20000
+    rate = 172500
     if heavy.power < 100:
         return rate * (2.8 if check_manufactured_date(heavy.year, heavy.month) < 3 else 10.9)
     elif heavy.power < 220:
@@ -247,8 +269,10 @@ def utilization_i(heavy):
     else:
         return 0
 
+
+# Расчёт утильсбора категории M
 def utilization_m(heavy):
-    rate = 20000
+    rate = 172500
     if heavy.power <= 30:
         return rate * (0.4 if check_manufactured_date(heavy.year, heavy.month) < 3 else 1.8)
     elif heavy.power < 60:
@@ -272,8 +296,10 @@ def utilization_m(heavy):
     else:
         return 0
 
+
+# Расчёт утильсбора категории N
 def utilization_n(heavy):
-    rate = 20000
+    rate = 172500
     if heavy.power < 100:
         return rate * (1.5 if check_manufactured_date(heavy.year, heavy.month) < 3 else 7)
     elif heavy.power < 200:
@@ -283,8 +309,10 @@ def utilization_n(heavy):
     else:
         return 0
 
+
+# Расчёт утильсбора категории K и L
 def utilization_kl(heavy):
-    rate = 2000
+    rate = 172500
     if heavy.engine_capacity < 300:
         return rate * (0.4 if check_manufactured_date(heavy.year, heavy.month) < 3 else 0.7)
     elif heavy.engine_capacity >= 300:
@@ -292,8 +320,10 @@ def utilization_kl(heavy):
     else:
         return 0
 
+
+# Расчёт утильсбора категории Автобусов
 def utilization_bus(heavy):
-    rate = 2000
+    rate = 15000
     if heavy.engine_capacity == 0:
         return rate * (10 if check_manufactured_date(heavy.year, heavy.month) < 3 else 10.09)
     elif heavy.engine_capacity < 2500:
@@ -307,11 +337,15 @@ def utilization_bus(heavy):
     else:
         return 0
 
+
+# Расчёт всех платежей кроме утильсбора
 def customs_heavy(heavy):
     return (price_to_rub(heavy.price, heavy.currency) +
             customs_duty(heavy) +
             customs_vat(heavy))
 
+
+# Расчёт всех платежей
 def customs_all_heavy(heavy):
     return (customs_heavy(heavy) +
             customs_utilization_heavy(heavy))

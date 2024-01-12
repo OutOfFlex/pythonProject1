@@ -3,6 +3,8 @@ from tkinter import ttk
 from tkinter import filedialog
 from tkinter import messagebox
 
+import currencies
+from currencies import *
 from excelFiles import *
 
 
@@ -307,7 +309,7 @@ class CustomsCalculatorGUI:
         selected_id_code = list(self.id_code_symbols.keys())[selected_id_code_index]
 
         # Создаем объект heavy с введенными данными
-        heavy = calculatorHeavy.Heavy(
+        heavy = Heavy(
             self.power_var.get(),
             selected_power_type,
             self.engine_capacity_var.get(),

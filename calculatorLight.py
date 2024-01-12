@@ -1,12 +1,14 @@
 from multiusedFunctions import *
 import currencies
 
+
 # Расчёт НДС для юридического лица
 def vat_artificial(vehicle):
     return ((price_to_rub(vehicle.price, vehicle.currency) +
              customs_fee(price_to_rub(vehicle.price, vehicle.currency)) +
              customs_excise_artificial(vehicle) +
              customs_duty_artificial(vehicle)) * 0.20)
+
 
 # Акциз для юридического лица
 def customs_excise_artificial(vehicle):
@@ -44,6 +46,7 @@ def customs_duty_artificial3(vehicle):
     else:
         return 0
 
+
 # Расчёт таможенной пошлины для возраста авто от 3-х до 7 лет юр. лицо
 def customs_duty_artificial7(vehicle):
     customs_duty = price_to_rub(vehicle.price, vehicle.currency) * 0.20
@@ -65,6 +68,7 @@ def customs_duty_artificial7(vehicle):
     else:
         return 0
 
+
 # Расчёт таможенной пошлины для возраста авто от 7 лет юр. лицо
 def customs_duty_artificial8(vehicle):
     if vehicle.engine_capacity <= 1000:
@@ -79,6 +83,7 @@ def customs_duty_artificial8(vehicle):
         return vehicle.engine_capacity * 3.2 * currencies.eur_rub
     else:
         return 0
+
 
 # Расчёт таможенной пошлины для дизеля возраста авто менее 3-х лет юр. лицо
 def customs_duty_artificial_dis3(vehicle):
@@ -99,6 +104,7 @@ def customs_duty_artificial_dis7(vehicle):
         return customs_duty_check(customs_duty, customs_duty_minimum)
     else:
         return 0
+
 
 # Расчёт таможенной пошлины для дизеля возраста авто от 7 лет юр. лицо
 def customs_duty_artificial_dis8(vehicle):
@@ -136,6 +142,7 @@ def customs_duty_artificial(vehicle):
             return 0
     else:
         return 0
+
 
 # Расчёт утилизационного сбора для авто до 3 лет юр. лицо
 def customs_utiliaztion_artificial3(vehicle):
