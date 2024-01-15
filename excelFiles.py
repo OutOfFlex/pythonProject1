@@ -66,7 +66,7 @@ def artificial_excel(row_excel, vehicle):
     global df
     df.iat[row_excel, 16] = price_to_rub(vehicle.price, vehicle.currency)
     df.iat[row_excel, 23] = customs_excise_artificial(vehicle)
-    df.iat[row_excel, 24] = customs_fee(vehicle.price)
+    df.iat[row_excel, 24] = customs_fee(price_to_rub(vehicle.price, vehicle.currency))
     df.iat[row_excel, 25] = customs_duty_artificial(vehicle)
     df.iat[row_excel, 26] = customs_utilization_artificial(vehicle)
     df.iat[row_excel, 27] = vat_artificial(vehicle)
@@ -77,7 +77,7 @@ def artificial_excel(row_excel, vehicle):
 def physical_excel(row_excel, vehicle):
     global df
     df.iat[row_excel, 16] = price_to_rub(vehicle.price, vehicle.currency)
-    df.iat[row_excel, 18] = customs_fee(vehicle.price)
+    df.iat[row_excel, 18] = customs_fee(price_to_rub(vehicle.price, vehicle.currency))
     df.iat[row_excel, 19] = customs_duty_physical(vehicle)
     df.iat[row_excel, 20] = customs_utilization_physical(vehicle)
     df.iat[row_excel, 22] = customs_physical(vehicle)
