@@ -3,7 +3,6 @@ from tkinter import ttk
 from tkinter import filedialog
 from tkinter import messagebox
 
-import currencies
 from currencies import *
 from excelFiles import *
 
@@ -87,7 +86,8 @@ class CustomsCalculatorGUI:
 
     def update_currencies(self):
         self.get_currencies()
-        currencies_text = f"CNY={currencies.cny_rub:.2f} USD={currencies.usd_rub:.2f} EUR={currencies.eur_rub:.2f} YEN={currencies.yen_rub:.3f}"
+        currencies_text = (f"CNY={currencies.cny_rub:.2f} USD={currencies.usd_rub:.2f} EUR={currencies.eur_rub:.2f} "
+                           f"YEN={currencies.yen_rub:.3f}")
         self.currency_label.config(text=currencies_text)
 
     def input_heavy(self):
@@ -337,6 +337,7 @@ class CustomsCalculatorGUI:
             self.tn_ved.get()
         )
 
+        multiusedFunctions.add_before_customs_expenses(heavy, self.logistics.get())
         multiusedFunctions.power_to_type(heavy)
         # Вызываем функцию для расчета и выводим результат в новом окне
         result_window = tk.Toplevel(self.root)
