@@ -87,3 +87,18 @@ def power_to_type(vehicle):
     if vehicle.power_type == "kw":
         vehicle.power *= 1.36
         vehicle.power_type = "hp"
+
+# Добавление логстики до таможни в сумму авто
+def add_before_customs_expenses(vehicle, logistics):
+    if vehicle.currency == "cny":
+        vehicle.price += (currencies.cny_rub * logistics)
+    elif vehicle.currency == "usd":
+        vehicle.price += (currencies.usd_rub * logistics)
+    elif vehicle.currency == "eur":
+        vehicle.price += (currencies.eur_rub * logistics)
+    elif vehicle.currency == "yen":
+        vehicle.price += (currencies.yen_rub * logistics)
+    elif vehicle.currency == "rub":
+        vehicle.price += logistics
+    else:
+        return 0

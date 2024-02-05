@@ -29,9 +29,13 @@ class CustomsCalculatorGUI:
         self.currency_symbols = {"rub": "₽", "cny": "¥", "eur": "€", "usd": "$", "yen": "Y"}
         self.engine_type_symbols = {"ice": "Бензин", "hyb": "Гибрид", "euv": "Электромотор", "dis": "Дизель"}
         self.power_type_symbols = {"hp": "Л.с.", "kw": "Квт.ч"}
+        self.logistics = tk.IntVar(value=150000)
+        self.ru_logistics = tk.IntVar(value=100000)
 
         ttk.Button(root, text="Импорт из Excel", command=self.import_from_excel).grid(row=0, column=1, pady=10)
         ttk.Button(root, text="Экспорт в Excel", command=self.export_to_excel).grid(row=0, column=2, pady=10)
+
+        ttk.Label(root, text="v1.6").grid(row=0, column=3, sticky="e")
 
         # Строка для обновления валют и получения актуального курса
         ttk.Button(root, text="Обновить валюты", command=self.update_currencies).grid(row=1, column=0, padx=10, pady=5,
@@ -40,8 +44,14 @@ class CustomsCalculatorGUI:
                                         text=f"CNY={cny_rub:.2f} USD={usd_rub:.2f} EUR={eur_rub:.2f} YEN={yen_rub:.3f}")
         self.currency_label.grid(row=1, column=1, columnspan=3, padx=10, pady=5, sticky="w")
 
-        ttk.Button(root, text="Легковые авто", command=self.input_light).grid(row=2, column=1, pady=10)
-        ttk.Button(root, text="Спец-техника", command=self.input_heavy).grid(row=2, column=2, pady=10)
+        ttk.Label(root, text="До таможни").grid(row=2, column=0, sticky="e")
+        ttk.Entry(root, textvariable=self.logistics, width=8).grid(row=2, column=1, padx=5, pady=5,
+                                                                   sticky="w")
+        ttk.Label(root, text="После таможни").grid(row=2, column=2, sticky="e")
+        ttk.Entry(root, textvariable=self.ru_logistics, width=8).grid(row=2, column=3, padx=5, pady=5,
+                                                                      sticky="w")
+        ttk.Button(root, text="Легковые авто", command=self.input_light).grid(row=3, column=1, pady=10)
+        ttk.Button(root, text="Спец-техника", command=self.input_heavy).grid(row=3, column=2, pady=10)
 
     @staticmethod
     def import_from_excel():
@@ -140,7 +150,8 @@ class CustomsCalculatorGUI:
 
         # Создаем кнопку для расчета
         ttk.Button(enter_heavy_window, text="Рассчитать", command=self.calculate_heavy_customs).grid(row=10, column=1,
-                                                                                               columnspan=2, pady=10)
+                                                                                                     columnspan=2,
+                                                                                                     pady=10)
 
     def input_light(self):
         # Окно для ввода и расчёта данных по легковым авто
@@ -153,11 +164,13 @@ class CustomsCalculatorGUI:
         ttk.Entry(enter_light_window, textvariable=self.power_var, width=8).grid(row=2, column=1, padx=10, pady=5)
 
         ttk.Label(enter_light_window, text="Объем двигателя (см³):").grid(row=3, column=0, padx=10, pady=5, sticky="e")
-        ttk.Entry(enter_light_window, textvariable=self.engine_capacity_var, width=8).grid(row=3, column=1, padx=10, pady=5)
+        ttk.Entry(enter_light_window, textvariable=self.engine_capacity_var, width=8).grid(row=3, column=1, padx=10,
+                                                                                           pady=5)
 
         ttk.Label(enter_light_window, text="Произведён(год, месяц):").grid(row=4, column=0, padx=5, pady=5, sticky="e")
         ttk.Entry(enter_light_window, textvariable=self.year_var, width=8).grid(row=4, column=1, padx=5, pady=5)
-        ttk.Entry(enter_light_window, textvariable=self.month_var, width=4).grid(row=4, column=2, padx=5, pady=5, sticky="w")
+        ttk.Entry(enter_light_window, textvariable=self.month_var, width=4).grid(row=4, column=2, padx=5, pady=5,
+                                                                                 sticky="w")
 
         ttk.Label(enter_light_window, text="Стоимость автомобиля:").grid(row=6, column=0, padx=5, pady=5, sticky="e")
         ttk.Entry(enter_light_window, textvariable=self.price_var, width=8).grid(row=6, column=1, padx=5, pady=5)
@@ -185,7 +198,8 @@ class CustomsCalculatorGUI:
         self.power_type_combobox.current(power_types.index("Л.с."))  # значение по умолчанию
 
         # Создаем Combobox для выбора типа двигателя
-        self.engine_type_combobox = ttk.Combobox(enter_light_window, textvariable=self.engine_type_var, state="readonly")
+        self.engine_type_combobox = ttk.Combobox(enter_light_window, textvariable=self.engine_type_var,
+                                                 state="readonly")
         self.engine_type_combobox.grid(row=3, column=2, columnspan=2, padx=8, pady=5, sticky="w")
         self.engine_type_combobox.configure(width=12)
 
@@ -196,7 +210,8 @@ class CustomsCalculatorGUI:
         self.engine_type_combobox.current(engine_types.index("Бензин"))  # значение по умолчанию
 
         # Создаем кнопку для расчета
-        ttk.Button(enter_light_window, text="Рассчитать", command=self.calculate_customs).grid(row=9, column=1, columnspan=2, pady=10)
+        ttk.Button(enter_light_window, text="Рассчитать", command=self.calculate_customs).grid(row=9, column=1,
+                                                                                               columnspan=2, pady=10)
 
     def calculate_customs(self):
         # Получаем выбранное значение валюты и типа двигателя
@@ -221,6 +236,7 @@ class CustomsCalculatorGUI:
             selected_engine_type
         )
 
+        multiusedFunctions.add_before_customs_expenses(vehicle, self.logistics.get())
         multiusedFunctions.power_to_type(vehicle)
         # Вызываем функцию для расчета и выводим результат в новом окне
         result_window = tk.Toplevel(self.root)
@@ -239,7 +255,7 @@ class CustomsCalculatorGUI:
                 columnspan=2, pady=5)
             ttk.Label(result_window, text=f"Акциз: {int(customs_excise_physical(vehicle)):,}").grid(row=4, column=0,
                                                                                                     columnspan=2,
-                                                                                                       pady=5)
+                                                                                                    pady=5)
             ttk.Label(result_window, text=f"Пошлина: {int(customs_duty_physical(vehicle)):,}").grid(row=5, column=0,
                                                                                                     columnspan=2,
                                                                                                     pady=5)
@@ -249,7 +265,7 @@ class CustomsCalculatorGUI:
                                                                                                              pady=5)
             ttk.Label(result_window, text=f"НДС: {int(vat_physical(vehicle)):,}").grid(row=7, column=0, columnspan=2,
                                                                                        pady=5)
-            ttk.Label(result_window, text=f"Суммарно: {int(customs_physical(vehicle)):,}").grid(row=8, column=0,
+            ttk.Label(result_window, text=f"Суммарно: {int(customs_physical(vehicle)+(self.ru_logistics.get())):,}").grid(row=8, column=0,
                                                                                                 columnspan=2,
                                                                                                 pady=5)
         else:
@@ -269,7 +285,7 @@ class CustomsCalculatorGUI:
                                                                                                              column=0,
                                                                                                              columnspan=2,
                                                                                                              pady=5)
-            ttk.Label(result_window, text=f"Суммарно: {int(customs_physical(vehicle)):,}").grid(row=6, column=0,
+            ttk.Label(result_window, text=f"Суммарно: {int(customs_physical(vehicle)+(self.ru_logistics.get())):,}").grid(row=6, column=0,
                                                                                                 columnspan=2,
                                                                                                 pady=5)
 
@@ -293,7 +309,7 @@ class CustomsCalculatorGUI:
                                                                                                   columnspan=2, pady=5)
         ttk.Label(result_window, text=f"НДС: {int(vat_artificial(vehicle)):,}").grid(row=7, column=2, columnspan=2,
                                                                                      pady=5)
-        ttk.Label(result_window, text=f"Суммарно: {int(customs_artificial(vehicle)):,}").grid(row=8, column=2,
+        ttk.Label(result_window, text=f"Суммарно: {int(customs_artificial(vehicle)+(self.ru_logistics.get())):,}").grid(row=8, column=2,
                                                                                               columnspan=2,
                                                                                               pady=5)
 
@@ -328,23 +344,25 @@ class CustomsCalculatorGUI:
         result_window.resizable(width=False, height=False)
 
         ttk.Label(result_window, text="Таможенные платежи(спец-техника):").grid(row=1, column=0,
-                                                                                            columnspan=2, pady=5)
+                                                                                columnspan=2, pady=5)
         ttk.Label(result_window, text=f"Цена авто: {int(price_to_rub(heavy.price, heavy.currency)):,}").grid(
             row=2, column=0, columnspan=2,
             pady=5)
         ttk.Label(result_window, text=f"Пошлина: {int(calculatorHeavy.customs_duty(heavy)):,}").grid(row=3, column=0,
-                                                                                                columnspan=2,
-                                                                                                pady=5)
+                                                                                                     columnspan=2,
+                                                                                                     pady=5)
         ttk.Label(result_window, text=f"НДС: {int(calculatorHeavy.customs_vat(heavy)):,}").grid(
             row=4, column=0,
             columnspan=2, pady=5)
-        ttk.Label(result_window, text=f"Утильсбор: {int(calculatorHeavy.customs_utilization_heavy(heavy)):,}").grid(row=5,
-                                                                                                         column=0,
-                                                                                                         columnspan=2,
-                                                                                                         pady=5)
-        ttk.Label(result_window, text=f"Суммарно: {int(calculatorHeavy.customs_heavy(heavy)):,}").grid(row=6, column=0,
-                                                                                            columnspan=2,
-                                                                                            pady=5)
-        ttk.Label(result_window, text=f"Суммарно с ЭПСМ: {int(calculatorHeavy.customs_all_heavy(heavy)):,}").grid(row=7, column=0,
-                                                                                          columnspan=2,
-                                                                                          pady=5)
+        ttk.Label(result_window, text=f"Утильсбор: {int(calculatorHeavy.customs_utilization_heavy(heavy)):,}").grid(
+            row=5,
+            column=0,
+            columnspan=2,
+            pady=5)
+        ttk.Label(result_window, text=f"Суммарно: {int(calculatorHeavy.customs_heavy(heavy)+(self.ru_logistics.get())):,}").grid(row=6, column=0,
+                                                                                                       columnspan=2,
+                                                                                                       pady=5)
+        ttk.Label(result_window, text=f"Суммарно с ЭПСМ: {int(calculatorHeavy.customs_all_heavy(heavy)+(self.ru_logistics.get())):,}").grid(row=7,
+                                                                                                                  column=0,
+                                                                                                                  columnspan=2,
+                                                                                                                  pady=5)
