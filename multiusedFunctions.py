@@ -91,13 +91,13 @@ def power_to_type(vehicle):
 # Добавление логстики до таможни в сумму авто
 def add_before_customs_expenses(vehicle, logistics):
     if vehicle.currency == "cny":
-        vehicle.price += (currencies.cny_rub * logistics)
+        vehicle.price += (logistics / currencies.cny_rub)
     elif vehicle.currency == "usd":
-        vehicle.price += (currencies.usd_rub * logistics)
+        vehicle.price += (logistics / currencies.usd_rub)
     elif vehicle.currency == "eur":
-        vehicle.price += (currencies.eur_rub * logistics)
+        vehicle.price += (logistics / currencies.eur_rub)
     elif vehicle.currency == "yen":
-        vehicle.price += (currencies.yen_rub * logistics)
+        vehicle.price += (logistics / currencies.yen_rub)
     elif vehicle.currency == "rub":
         vehicle.price += logistics
     else:

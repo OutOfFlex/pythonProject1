@@ -34,7 +34,7 @@ class CustomsCalculatorGUI:
         ttk.Button(root, text="Импорт из Excel", command=self.import_from_excel).grid(row=0, column=1, pady=10)
         ttk.Button(root, text="Экспорт в Excel", command=self.export_to_excel).grid(row=0, column=2, pady=10)
 
-        ttk.Label(root, text="v1.6").grid(row=0, column=3, sticky="e")
+        ttk.Label(root, text="v1.61").grid(row=0, column=3, sticky="e")
 
         # Строка для обновления валют и получения актуального курса
         ttk.Button(root, text="Обновить валюты", command=self.update_currencies).grid(row=1, column=0, padx=10, pady=5,
