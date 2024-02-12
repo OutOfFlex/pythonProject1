@@ -31,7 +31,7 @@ class CustomsCalculatorGUI:
         self.logistics = tk.IntVar(value=0)
         self.ru_logistics = tk.IntVar(value=0)
 
-        #self.add_excel_expenses = tk.BooleanVar(value=False)
+        self.add_excel_expenses = tk.BooleanVar()
         self.root = root
         self.start_row = 4  # Начальная строка для полей ввода легковых автомобилей
         self.radio_button_category = tk.StringVar()
@@ -39,10 +39,10 @@ class CustomsCalculatorGUI:
         ttk.Button(root, text="Импорт из Excel", command=self.import_from_excel).grid(row=0, column=0, pady=10)
         ttk.Button(root, text="Экспорт в Excel", command=self.export_to_excel).grid(row=0, column=1, pady=10)
 
-        #tk.Checkbutton(root, text="Добавить логистику в Excel", variable=self.add_excel_expenses).grid(row=0, column=2,
-        #                                                                                               pady=10)
+        ttk.Checkbutton(root, text="Добавить логистику в Excel", variable=self.add_excel_expenses).grid(row=0, column=2,
+                                                                                                       pady=10)
 
-        ttk.Label(root, text="v1.7").grid(row=0, column=3, sticky="e")
+        ttk.Label(root, text="v1.71").grid(row=0, column=3, sticky="e")
 
         # Строка для обновления валют и получения актуального курса
         ttk.Button(root, text="Обновить валюты", command=self.update_currencies).grid(row=1, column=0, padx=10, pady=5,
@@ -73,13 +73,12 @@ class CustomsCalculatorGUI:
             except Exception as e:
                 messagebox.showerror("Ошибка", f"Ошибка при импорте: {str(e)}")
 
-    @staticmethod
-    def export_to_excel():
+    def export_to_excel(self):
         file_path = filedialog.asksaveasfilename(defaultextension=".xlsx", filetypes=[("Excel files", "*.xlsx")])
 
         if file_path:
             try:
-                export_excel(file_path)
+                export_excel(file_path, self.add_excel_expenses.get(), self.logistics.get(), self.ru_logistics.get())
             except Exception as e:
                 messagebox.showerror("Ошибка", f"Ошибка при экспорте: {str(e)}")
 
@@ -110,17 +109,21 @@ class CustomsCalculatorGUI:
         ttk.Label(self.root, text="Мощность л.с.:").grid(row=self.start_row, column=0, padx=10, pady=5, sticky="e")
         ttk.Entry(self.root, textvariable=self.power_var, width=8).grid(row=self.start_row, column=1, padx=10, pady=5)
 
-        ttk.Label(self.root, text="Объем двигателя (см³):").grid(row=self.start_row + 1, column=0, padx=10, pady=5, sticky="e")
-        ttk.Entry(self.root, textvariable=self.engine_capacity_var, width=8).grid(row=self.start_row + 1, column=1, padx=10,
-                                                                                           pady=5)
+        ttk.Label(self.root, text="Объем двигателя (см³):").grid(row=self.start_row + 1, column=0, padx=10, pady=5,
+                                                                 sticky="e")
+        ttk.Entry(self.root, textvariable=self.engine_capacity_var, width=8).grid(row=self.start_row + 1, column=1,
+                                                                                  padx=10, pady=5)
 
-        ttk.Label(self.root, text="Произведён(год, месяц):").grid(row=self.start_row + 2, column=0, padx=5, pady=5, sticky="e")
+        ttk.Label(self.root, text="Произведён(год, месяц):").grid(row=self.start_row + 2, column=0, padx=5, pady=5,
+                                                                  sticky="e")
         ttk.Entry(self.root, textvariable=self.year_var, width=8).grid(row=self.start_row + 2, column=1, padx=5, pady=5)
-        ttk.Entry(self.root, textvariable=self.month_var, width=4).grid(row=self.start_row + 2, column=2, padx=5, pady=5,
-                                                                                 sticky="w")
+        ttk.Entry(self.root, textvariable=self.month_var, width=4).grid(row=self.start_row + 2, column=2, padx=5,
+                                                                        pady=5, sticky="w")
 
-        ttk.Label(self.root, text="Стоимость автомобиля:").grid(row=self.start_row + 3, column=0, padx=5, pady=5, sticky="e")
-        ttk.Entry(self.root, textvariable=self.price_var, width=8).grid(row=self.start_row + 3, column=1, padx=5, pady=5)
+        ttk.Label(self.root, text="Стоимость автомобиля:").grid(row=self.start_row + 3, column=0, padx=5, pady=5,
+                                                                sticky="e")
+        ttk.Entry(self.root, textvariable=self.price_var, width=8).grid(row=self.start_row + 3, column=1, padx=5,
+                                                                        pady=5)
 
         # Создаем Combobox для выбора валюты
         self.currency_combobox = ttk.Combobox(self.root, textvariable=self.currency_var, state="readonly")
@@ -160,9 +163,9 @@ class CustomsCalculatorGUI:
         self.power_type_combobox.current(power_types.index("Л.с."))  # значение по умолчанию
 
         # Создаем кнопку для расчета
-        ttk.Button(self.root, text="Рассчитать", command=self.calculate_heavy_customs).grid(row=self.start_row + 6, column=1,
-                                                                                                     columnspan=2,
-                                                                                                     pady=10)
+        ttk.Button(self.root, text="Рассчитать", command=self.calculate_heavy_customs).grid(row=self.start_row + 6,
+                                                                                            column=1, columnspan=2,
+                                                                                            pady=10)
 
     def input_light(self):
         # Очистка содержимого ниже радиокнопок
@@ -254,6 +257,7 @@ class CustomsCalculatorGUI:
 
         multiusedFunctions.add_before_customs_expenses(vehicle, self.logistics.get())
         multiusedFunctions.power_to_type(vehicle)
+
         # Вызываем функцию для расчета и выводим результат в новом окне
         result_window = tk.Toplevel(self.root)
         result_window.title("Результат расчета")
@@ -282,8 +286,7 @@ class CustomsCalculatorGUI:
             ttk.Label(result_window, text=f"НДС: {int(vat_physical(vehicle)):,}").grid(row=7, column=0, columnspan=2,
                                                                                        pady=5)
             ttk.Label(result_window, text=f"Суммарно: {int(customs_physical(vehicle)+(self.ru_logistics.get())):,}").grid(row=8, column=0,
-                                                                                                columnspan=2,
-                                                                                                pady=5)
+                                                                                                columnspan=2, pady=5)
         else:
             ttk.Label(result_window, text="Таможенные платежи для автомобиля (физ.лицо):").grid(row=1, column=0,
                                                                                                 columnspan=2, pady=5)
