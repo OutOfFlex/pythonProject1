@@ -60,7 +60,7 @@ def customs_duty_euv(price):
     return price * 0.15
 
 # Костыльный расчёт ПОЛНЫХ лет с месяца производства
-def check_manufactured_date(year, month):
+def true_date(year, month):
     output_year = currentTime.year - year
     if currentTime.month < month:
         return output_year - 1

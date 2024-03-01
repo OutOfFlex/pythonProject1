@@ -5,11 +5,11 @@ from calculatorPhysical import *
 from models.vehicle import *
 from models.heavy import *
 
-import calculatorHeavy
+from calculatorHeavy import *
 import multiusedFunctions
 
 df = pd.DataFrame()
-
+hc = HeavyCalculator
 
 # Импорт в датафрейм из экселя
 def import_excel(filepath):
@@ -127,8 +127,8 @@ def heavy_excel(row_excel, before_logistics, after_logistics):
     multiusedFunctions.add_before_customs_expenses(heavy, before_logistics)
     df.iat[row_excel, 16] = price_to_rub(heavy.price, heavy.currency)
     multiusedFunctions.add_before_customs_expenses(heavy, before_logistics)
-    df.iat[row_excel, 25] = calculatorHeavy.customs_duty(heavy)
-    df.iat[row_excel, 26] = calculatorHeavy.customs_utilization_heavy(heavy)
-    df.iat[row_excel, 27] = calculatorHeavy.customs_vat(heavy)
-    df.iat[row_excel, 28] = calculatorHeavy.customs_heavy(heavy) + after_logistics
-    df.iat[row_excel, 29] = calculatorHeavy.customs_all_heavy(heavy) + after_logistics
+    df.iat[row_excel, 25] = hc.customs_duty(heavy)
+    df.iat[row_excel, 26] = hc.customs_utilization_heavy(heavy)
+    df.iat[row_excel, 27] = hc.customs_vat(heavy)
+    df.iat[row_excel, 28] = hc.customs_heavy(heavy) + after_logistics
+    df.iat[row_excel, 29] = hc.customs_all_heavy(heavy) + after_logistics

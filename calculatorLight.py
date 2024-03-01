@@ -123,20 +123,20 @@ def customs_duty_artificial(vehicle):
     if vehicle.engine_type == "euv":
         return customs_duty_euv(price_to_rub(vehicle.price, vehicle.currency))
     elif vehicle.engine_type == "ice" or vehicle.engine_type == "hyb":
-        if check_manufactured_date(vehicle.year, vehicle.month) < 3:
+        if true_date(vehicle.year, vehicle.month) < 3:
             return customs_duty_artificial3(vehicle)
-        elif check_manufactured_date(vehicle.year, vehicle.month) < 7:
+        elif true_date(vehicle.year, vehicle.month) < 7:
             return customs_duty_artificial7(vehicle)
-        elif check_manufactured_date(vehicle.year, vehicle.month) >= 7:
+        elif true_date(vehicle.year, vehicle.month) >= 7:
             return customs_duty_artificial8(vehicle)
         else:
             return 0
     elif vehicle.engine_type == "dis":
-        if check_manufactured_date(vehicle.year, vehicle.month) < 3:
+        if true_date(vehicle.year, vehicle.month) < 3:
             return customs_duty_artificial_dis3(vehicle)
-        elif check_manufactured_date(vehicle.year, vehicle.month) < 7:
+        elif true_date(vehicle.year, vehicle.month) < 7:
             return customs_duty_artificial_dis7(vehicle)
-        elif check_manufactured_date(vehicle.year, vehicle.month) >= 7:
+        elif true_date(vehicle.year, vehicle.month) >= 7:
             return customs_duty_artificial_dis8(vehicle)
         else:
             return 0
@@ -184,9 +184,9 @@ def customs_utiliaztion_arificical4(vehicle):
 
 # Расчёт утилизационного сбора для юридических лиц
 def customs_utilization_artificial(vehicle):
-    if check_manufactured_date(vehicle.year, vehicle.month) < 3:
+    if true_date(vehicle.year, vehicle.month) < 3:
         return customs_utiliaztion_artificial3(vehicle)
-    elif check_manufactured_date(vehicle.year, vehicle.month) >= 3:
+    elif true_date(vehicle.year, vehicle.month) >= 3:
         return customs_utiliaztion_arificical4(vehicle)
     else:
         return 0

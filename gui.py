@@ -368,21 +368,21 @@ class CustomsCalculatorGUI:
         ttk.Label(result_window, text=f"Цена авто: {int(price_to_rub(heavy.price, heavy.currency)):,}").grid(
             row=2, column=0, columnspan=2,
             pady=5)
-        ttk.Label(result_window, text=f"Пошлина: {int(calculatorHeavy.customs_duty(heavy)):,}").grid(row=3, column=0,
+        ttk.Label(result_window, text=f"Пошлина: {int(hc.customs_duty(heavy)):,}").grid(row=3, column=0,
                                                                                                      columnspan=2,
                                                                                                      pady=5)
-        ttk.Label(result_window, text=f"НДС: {int(calculatorHeavy.customs_vat(heavy)):,}").grid(
+        ttk.Label(result_window, text=f"НДС: {int(hc.customs_vat(heavy)):,}").grid(
             row=4, column=0,
             columnspan=2, pady=5)
-        ttk.Label(result_window, text=f"Утильсбор: {int(calculatorHeavy.customs_utilization_heavy(heavy)):,}").grid(
+        ttk.Label(result_window, text=f"Утильсбор: {int(hc.customs_utilization_heavy(heavy)):,}").grid(
             row=5,
             column=0,
             columnspan=2,
             pady=5)
-        ttk.Label(result_window, text=f"Суммарно: {int(calculatorHeavy.customs_heavy(heavy)+(self.ru_logistics.get())):,}").grid(row=6, column=0,
+        ttk.Label(result_window, text=f"Суммарно: {int(hc.customs_heavy(heavy)+(self.ru_logistics.get())):,}").grid(row=6, column=0,
                                                                                                        columnspan=2,
                                                                                                        pady=5)
-        ttk.Label(result_window, text=f"Суммарно с ЭПСМ: {int(calculatorHeavy.customs_all_heavy(heavy)+(self.ru_logistics.get())):,}").grid(row=7,
+        ttk.Label(result_window, text=f"Суммарно с ЭПСМ: {int(hc.customs_all_heavy(heavy)+(self.ru_logistics.get())):,}").grid(row=7,
                                                                                                                   column=0,
                                                                                                                   columnspan=2,
                                                                                                                   pady=5)

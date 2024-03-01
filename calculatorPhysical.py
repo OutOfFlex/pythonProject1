@@ -76,11 +76,11 @@ def customs_duty_physical(vehicle):
     if vehicle.engine_type == "euv":
         return customs_duty_euv(price_to_rub(vehicle.price, vehicle.currency))
     elif vehicle.engine_type == "ice" or vehicle.engine_type == "hyb" or vehicle.engine_type == "dis":
-        if check_manufactured_date(vehicle.year, vehicle.month) < 3:
+        if true_date(vehicle.year, vehicle.month) < 3:
             return customs_duty_physical3(vehicle)
-        elif check_manufactured_date(vehicle.year, vehicle.month) < 5:
+        elif true_date(vehicle.year, vehicle.month) < 5:
             return customs_duty_physical5(vehicle)
-        elif check_manufactured_date(vehicle.year, vehicle.month) >= 5:
+        elif true_date(vehicle.year, vehicle.month) >= 5:
             return customs_duty_physical6(vehicle)
         else:
             return 0
@@ -118,9 +118,9 @@ def customs_utiliaztion_physical4(vehicle):
 
 # Расчёт утилизационного сбора для физических лиц
 def customs_utilization_physical(vehicle):
-    if check_manufactured_date(vehicle.year, vehicle.month) < 3:
+    if true_date(vehicle.year, vehicle.month) < 3:
         return customs_utiliaztion_physical3(vehicle)
-    elif check_manufactured_date(vehicle.year, vehicle.month) >= 3:
+    elif true_date(vehicle.year, vehicle.month) >= 3:
         return customs_utiliaztion_physical4(vehicle)
     else:
         return 0
