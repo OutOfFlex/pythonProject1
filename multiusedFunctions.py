@@ -29,7 +29,7 @@ def customs_fee(price):
     elif price > 10000000:
         return 30000
     else:
-        return 0
+        raise ValueError(f"Значение price не int {customs_fee.__name__}")
 
 # Проверка минимума пошлины
 def customs_duty_check(customs_duty, customs_duty_minimum):
@@ -53,7 +53,7 @@ def customs_excise_euv(power):
     elif power > 500:
         return 1584 * power
     else:
-        return 0
+        raise ValueError(f"Значение power не int {customs_excise_euv.__name__}")
 
 # Расчёт таможенной пошлины для электромобиля
 def customs_duty_euv(price):
@@ -80,13 +80,30 @@ def price_to_rub(price, currency):
     elif currency == "rub":
         return price
     else:
-        return 0
+        raise ValueError(f"Неизвестная валюта {price_to_rub.__name__}")
+
+def price_to_rub_instance(vehicle):
+    if vehicle.currency == "cny":
+        vehicle.price *= currencies.cny_rub
+        vehicle.currency = "rub"
+    elif vehicle.currency == "usd":
+        vehicle.price *= currencies.usd_rub
+        vehicle.currency = "rub"
+    elif vehicle.currency == "eur":
+        vehicle.price *= currencies.eur_rub
+        vehicle.currency = "rub"
+    elif vehicle.currency == "yen":
+        vehicle.price *= currencies.yen_rub
+        vehicle.currency = "rub"
+    else:
+        raise ValueError(f"Неизвестная валюта {price_to_rub_instance.__name__}")
 
 # Перевод квт/ч в л.с.
 def power_to_type(vehicle):
     if vehicle.power_type == "kw":
         vehicle.power *= 1.36
         vehicle.power_type = "hp"
+
 
 # Добавление логстики до таможни в сумму авто
 def add_before_customs_expenses(vehicle, logistics):
@@ -101,4 +118,4 @@ def add_before_customs_expenses(vehicle, logistics):
     elif vehicle.currency == "rub":
         vehicle.price += logistics
     else:
-        return 0
+        raise ValueError(f"Неизвестная валюта {add_before_customs_expenses.__name__}")

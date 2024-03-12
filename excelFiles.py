@@ -11,6 +11,7 @@ import multiusedFunctions
 df = pd.DataFrame()
 hc = HeavyCalculator
 
+
 # Импорт в датафрейм из экселя
 def import_excel(filepath):
     global df
@@ -49,44 +50,44 @@ def currency_excel(i):
 # Расчёт для электромобиля
 def euv_excel(row_excel, vehicle, before_logistics, after_logistics):
     global df
-    df.iat[row_excel, 16] = price_to_rub(vehicle.price, vehicle.currency)
+    df.iat[row_excel, 16] = vehicle.price
     multiusedFunctions.add_before_customs_expenses(vehicle, before_logistics)
     df.iat[row_excel, 17] = customs_excise_euv(vehicle.power)
-    df.iat[row_excel, 18] = customs_fee(price_to_rub(vehicle.price, vehicle.currency))
-    df.iat[row_excel, 19] = customs_duty_physical(vehicle)
-    df.iat[row_excel, 20] = customs_utilization_physical(vehicle)
-    df.iat[row_excel, 21] = vat_physical(vehicle)
-    df.iat[row_excel, 22] = customs_physical(vehicle)
+    df.iat[row_excel, 18] = customs_fee(vehicle.price)
+    df.iat[row_excel, 19] = PhysicalCalculator.customs_duty_physical(vehicle)
+    df.iat[row_excel, 20] = PhysicalCalculator.customs_utilization_physical(vehicle)
+    df.iat[row_excel, 21] = PhysicalCalculator.vat_physical(vehicle)
+    df.iat[row_excel, 22] = PhysicalCalculator.customs_physical(vehicle)
     df.iat[row_excel, 23] = customs_excise_euv(vehicle.power)
-    df.iat[row_excel, 24] = customs_fee(price_to_rub(vehicle.price, vehicle.currency))
-    df.iat[row_excel, 25] = customs_duty_artificial(vehicle)
-    df.iat[row_excel, 26] = customs_utilization_artificial(vehicle)
-    df.iat[row_excel, 27] = vat_artificial(vehicle)
-    df.iat[row_excel, 28] = customs_artificial(vehicle) + after_logistics
+    df.iat[row_excel, 24] = customs_fee(vehicle.price)
+    df.iat[row_excel, 25] = LightCalculator.customs_duty_artificial(vehicle)
+    df.iat[row_excel, 26] = LightCalculator.customs_utilization_artificial(vehicle)
+    df.iat[row_excel, 27] = LightCalculator.vat_artificial(vehicle)
+    df.iat[row_excel, 28] = LightCalculator.customs_artificial(vehicle) + after_logistics
 
 
 # Расчёт легковых авто для юр.лиц
 def artificial_excel(row_excel, vehicle, before_logistics, after_logistics):
     global df
-    df.iat[row_excel, 16] = price_to_rub(vehicle.price, vehicle.currency)
+    df.iat[row_excel, 16] = vehicle.price
     multiusedFunctions.add_before_customs_expenses(vehicle, before_logistics)
-    df.iat[row_excel, 23] = customs_excise_artificial(vehicle)
-    df.iat[row_excel, 24] = customs_fee(price_to_rub(vehicle.price, vehicle.currency))
-    df.iat[row_excel, 25] = customs_duty_artificial(vehicle)
-    df.iat[row_excel, 26] = customs_utilization_artificial(vehicle)
-    df.iat[row_excel, 27] = vat_artificial(vehicle)
-    df.iat[row_excel, 28] = customs_artificial(vehicle) + after_logistics
+    df.iat[row_excel, 23] = LightCalculator.customs_excise_artificial(vehicle)
+    df.iat[row_excel, 24] = customs_fee(vehicle.price)
+    df.iat[row_excel, 25] = LightCalculator.customs_duty_artificial(vehicle)
+    df.iat[row_excel, 26] = LightCalculator.customs_utilization_artificial(vehicle)
+    df.iat[row_excel, 27] = LightCalculator.vat_artificial(vehicle)
+    df.iat[row_excel, 28] = LightCalculator.customs_artificial(vehicle) + after_logistics
 
 
 # Расчёт легковых авто для физических лиц
 def physical_excel(row_excel, vehicle, before_logistics, after_logistics):
     global df
-    df.iat[row_excel, 16] = price_to_rub(vehicle.price, vehicle.currency)
+    df.iat[row_excel, 16] = vehicle.price
     multiusedFunctions.add_before_customs_expenses(vehicle, before_logistics)
-    df.iat[row_excel, 18] = customs_fee(price_to_rub(vehicle.price, vehicle.currency))
-    df.iat[row_excel, 19] = customs_duty_physical(vehicle)
-    df.iat[row_excel, 20] = customs_utilization_physical(vehicle)
-    df.iat[row_excel, 22] = customs_physical(vehicle) + after_logistics
+    df.iat[row_excel, 18] = customs_fee(vehicle.price)
+    df.iat[row_excel, 19] = PhysicalCalculator.customs_duty_physical(vehicle)
+    df.iat[row_excel, 20] = PhysicalCalculator.customs_utilization_physical(vehicle)
+    df.iat[row_excel, 22] = PhysicalCalculator.customs_physical(vehicle) + after_logistics
 
 
 # Расчёт для легковых авто
@@ -102,6 +103,7 @@ def light_excel(row_excel, before_logistics, after_logistics):
         df.iat[row_excel, 14],
         df.iat[row_excel, 9]
     )
+    multiusedFunctions.price_to_rub_instance(vehicle)
     multiusedFunctions.power_to_type(vehicle)
     if vehicle.engine_type == "euv":
         euv_excel(row_excel, vehicle, before_logistics, after_logistics)
@@ -124,8 +126,9 @@ def heavy_excel(row_excel, before_logistics, after_logistics):
         df.iat[row_excel, 3],
         df.iat[row_excel, 2]
     )
+    multiusedFunctions.price_to_rub_instance(heavy)
     multiusedFunctions.add_before_customs_expenses(heavy, before_logistics)
-    df.iat[row_excel, 16] = price_to_rub(heavy.price, heavy.currency)
+    df.iat[row_excel, 16] = heavy.price
     multiusedFunctions.add_before_customs_expenses(heavy, before_logistics)
     df.iat[row_excel, 25] = hc.customs_duty(heavy)
     df.iat[row_excel, 26] = hc.customs_utilization_heavy(heavy)

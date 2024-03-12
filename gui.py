@@ -42,7 +42,7 @@ class CustomsCalculatorGUI:
         ttk.Checkbutton(root, text="Добавить логистику в Excel", variable=self.add_excel_expenses).grid(row=0, column=2,
                                                                                                        pady=10)
 
-        ttk.Label(root, text="v1.71").grid(row=0, column=3, sticky="e")
+        ttk.Label(root, text="v1.72").grid(row=0, column=3, sticky="e")
 
         # Строка для обновления валют и получения актуального курса
         ttk.Button(root, text="Обновить валюты", command=self.update_currencies).grid(row=1, column=0, padx=10, pady=5,
@@ -255,6 +255,7 @@ class CustomsCalculatorGUI:
             selected_engine_type
         )
 
+        multiusedFunctions.price_to_rub_instance(vehicle)
         multiusedFunctions.add_before_customs_expenses(vehicle, self.logistics.get())
         multiusedFunctions.power_to_type(vehicle)
 
@@ -266,69 +267,69 @@ class CustomsCalculatorGUI:
         if vehicle.engine_type == "euv":
             ttk.Label(result_window, text="Таможенные платежи для электромобиля (физ.лицо):").grid(row=1, column=0,
                                                                                                    columnspan=2, pady=5)
-            ttk.Label(result_window, text=f"Цена авто: {int(price_to_rub(vehicle.price, vehicle.currency)):,}").grid(
+            ttk.Label(result_window, text=f"Цена авто: {int(vehicle.price):,}").grid(
                 row=2, column=0, columnspan=2,
                 pady=5)
             ttk.Label(result_window,
-                      text=f"Таможенный сбор: {int(customs_fee(price_to_rub(vehicle.price, vehicle.currency))):,}").grid(
+                      text=f"Таможенный сбор: {int(customs_fee(vehicle.price)):,}").grid(
                 row=3, column=0,
                 columnspan=2, pady=5)
-            ttk.Label(result_window, text=f"Акциз: {int(customs_excise_physical(vehicle)):,}").grid(row=4, column=0,
+            ttk.Label(result_window, text=f"Акциз: {int(PhysicalCalculator.customs_excise_physical(vehicle)):,}").grid(row=4, column=0,
                                                                                                     columnspan=2,
                                                                                                     pady=5)
-            ttk.Label(result_window, text=f"Пошлина: {int(customs_duty_physical(vehicle)):,}").grid(row=5, column=0,
+            ttk.Label(result_window, text=f"Пошлина: {int(PhysicalCalculator.customs_duty_physical(vehicle)):,}").grid(row=5, column=0,
                                                                                                     columnspan=2,
                                                                                                     pady=5)
-            ttk.Label(result_window, text=f"Утильсбор: {int(customs_utilization_physical(vehicle)):,}").grid(row=6,
+            ttk.Label(result_window, text=f"Утильсбор: {int(PhysicalCalculator.customs_utilization_physical(vehicle)):,}").grid(row=6,
                                                                                                              column=0,
                                                                                                              columnspan=2,
                                                                                                              pady=5)
-            ttk.Label(result_window, text=f"НДС: {int(vat_physical(vehicle)):,}").grid(row=7, column=0, columnspan=2,
+            ttk.Label(result_window, text=f"НДС: {int(PhysicalCalculator.vat_physical(vehicle)):,}").grid(row=7, column=0, columnspan=2,
                                                                                        pady=5)
-            ttk.Label(result_window, text=f"Суммарно: {int(customs_physical(vehicle)+(self.ru_logistics.get())):,}").grid(row=8, column=0,
+            ttk.Label(result_window, text=f"Суммарно: {int(PhysicalCalculator.customs_physical(vehicle)+(self.ru_logistics.get())):,}").grid(row=8, column=0,
                                                                                                 columnspan=2, pady=5)
         else:
             ttk.Label(result_window, text="Таможенные платежи для автомобиля (физ.лицо):").grid(row=1, column=0,
                                                                                                 columnspan=2, pady=5)
-            ttk.Label(result_window, text=f"Цена авто: {int(price_to_rub(vehicle.price, vehicle.currency)):,}").grid(
+            ttk.Label(result_window, text=f"Цена авто: {int(vehicle.price):,}").grid(
                 row=2, column=0, columnspan=2,
                 pady=5)
             ttk.Label(result_window,
-                      text=f"Таможенный сбор: {int(customs_fee(price_to_rub(vehicle.price, vehicle.currency))):,}").grid(
+                      text=f"Таможенный сбор: {int(customs_fee(vehicle.price)):,}").grid(
                 row=3, column=0,
                 columnspan=2, pady=5)
-            ttk.Label(result_window, text=f"Пошлина: {int(customs_duty_physical(vehicle)):,}").grid(row=4, column=0,
+            ttk.Label(result_window, text=f"Пошлина: {int(PhysicalCalculator.customs_duty_physical(vehicle)):,}").grid(row=4, column=0,
                                                                                                     columnspan=2,
                                                                                                     pady=5)
-            ttk.Label(result_window, text=f"Утильсбор: {int(customs_utilization_physical(vehicle)):,}").grid(row=5,
+            ttk.Label(result_window, text=f"Утильсбор: {int(PhysicalCalculator.customs_utilization_physical(vehicle)):,}").grid(row=5,
                                                                                                              column=0,
                                                                                                              columnspan=2,
                                                                                                              pady=5)
-            ttk.Label(result_window, text=f"Суммарно: {int(customs_physical(vehicle)+(self.ru_logistics.get())):,}").grid(row=6, column=0,
+            ttk.Label(result_window, text=f"Суммарно: {int(PhysicalCalculator.customs_physical(vehicle)+(self.ru_logistics.get())):,}").grid(row=6, column=0,
                                                                                                 columnspan=2,
                                                                                                 pady=5)
 
         ttk.Label(result_window, text="Таможенные платежи для автомобиля (юр.лицо):").grid(row=1, column=2,
                                                                                            columnspan=2, pady=5)
-        ttk.Label(result_window, text=f"Цена авто: {int(price_to_rub(vehicle.price, vehicle.currency)):,}").grid(row=2,
+        ttk.Label(result_window, text=f"Цена авто: {int(vehicle.price):,}").grid(row=2,
                                                                                                                  column=2,
                                                                                                                  columnspan=2,
                                                                                                                  pady=5)
         ttk.Label(result_window,
-                  text=f"Таможенный сбор: {int(customs_fee(price_to_rub(vehicle.price, vehicle.currency))):,}").grid(
+                  text=f"Таможенный сбор: {int(vehicle.price):,}").grid(
             row=3, column=2,
             columnspan=2, pady=5)
-        ttk.Label(result_window, text=f"Пошлина: {int(customs_duty_artificial(vehicle)):,}").grid(row=4, column=2,
+        ttk.Label(result_window, text=f"Пошлина: {int(LightCalculator.customs_duty_artificial(vehicle)):,}").grid(row=4, column=2,
                                                                                                   columnspan=2, pady=5)
-        ttk.Label(result_window, text=f"Утильсбор: {int(customs_utilization_artificial(vehicle)):,}").grid(row=5,
+        ttk.Label(result_window, text=f"Утильсбор: {int(LightCalculator.customs_utilization_artificial(vehicle)):,}").grid(row=5,
                                                                                                            column=2,
                                                                                                            columnspan=2,
                                                                                                            pady=5)
-        ttk.Label(result_window, text=f"Акциз: {int(customs_excise_artificial(vehicle)):,}").grid(row=6, column=2,
+        ttk.Label(result_window, text=f"Акциз: {int(LightCalculator.customs_excise_artificial(vehicle)):,}").grid(row=6, column=2,
                                                                                                   columnspan=2, pady=5)
-        ttk.Label(result_window, text=f"НДС: {int(vat_artificial(vehicle)):,}").grid(row=7, column=2, columnspan=2,
+        ttk.Label(result_window, text=f"НДС: {int(LightCalculator.vat_artificial(vehicle)):,}").grid(row=7, column=2, columnspan=2,
                                                                                      pady=5)
-        ttk.Label(result_window, text=f"Суммарно: {int(customs_artificial(vehicle)+(self.ru_logistics.get())):,}").grid(row=8, column=2,
+        ttk.Label(result_window, text=f"Суммарно: {int(LightCalculator.customs_artificial(vehicle)+(self.ru_logistics.get())):,}").grid(row=8, column=2,
                                                                                               columnspan=2,
                                                                                               pady=5)
 
@@ -356,6 +357,7 @@ class CustomsCalculatorGUI:
             self.tn_ved.get()
         )
 
+        multiusedFunctions.price_to_rub_instance(heavy)
         multiusedFunctions.add_before_customs_expenses(heavy, self.logistics.get())
         multiusedFunctions.power_to_type(heavy)
         # Вызываем функцию для расчета и выводим результат в новом окне
@@ -365,7 +367,7 @@ class CustomsCalculatorGUI:
 
         ttk.Label(result_window, text="Таможенные платежи(спец-техника):").grid(row=1, column=0,
                                                                                 columnspan=2, pady=5)
-        ttk.Label(result_window, text=f"Цена авто: {int(price_to_rub(heavy.price, heavy.currency)):,}").grid(
+        ttk.Label(result_window, text=f"Цена авто: {int(heavy.price):,}").grid(
             row=2, column=0, columnspan=2,
             pady=5)
         ttk.Label(result_window, text=f"Пошлина: {int(hc.customs_duty(heavy)):,}").grid(row=3, column=0,

@@ -123,7 +123,8 @@ class HeavyCalculator:
         if heavy.id_code in utilization_functions:
             return utilization_functions[heavy.id_code](heavy)
         else:
-            return 0
+            raise ValueError(f"Значение heavy.id_code не находится в списке id кодов {HeavyCalculator.
+                             customs_utilization_heavy.__name__}")
 
     @staticmethod
     def utilization_f(heavy):
