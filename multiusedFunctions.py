@@ -42,6 +42,8 @@ def customs_duty_check(customs_duty, customs_duty_minimum):
 def customs_excise_euv(power):
     if power <= 90:
         return 0
+    elif power <= 150:
+        return 58 * power
     elif power <= 200:
         return 531 * power
     elif power <= 300:
